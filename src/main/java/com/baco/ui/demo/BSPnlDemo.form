@@ -1,0 +1,146 @@
+<?xml version="1.1" encoding="UTF-8" ?>
+
+<Form version="1.3" maxVersion="1.7" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
+  <AuxValues>
+    <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
+    <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_generateFQN" type="java.lang.Boolean" value="true"/>
+    <AuxValue name="FormSettings_generateMnemonicsCode" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_i18nAutoMode" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_layoutCodeTarget" type="java.lang.Integer" value="1"/>
+    <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
+    <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
+  </AuxValues>
+
+  <Layout>
+    <DimensionLayout dim="0">
+      <Group type="103" groupAlignment="0" attributes="0">
+          <Group type="102" attributes="0">
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="breadCrumb" alignment="0" max="32767" attributes="0"/>
+                  <Component id="jLabel1" alignment="0" pref="608" max="32767" attributes="0"/>
+                  <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
+                      <Component id="btnCloseSession" alignment="0" max="32767" attributes="1"/>
+                      <Component id="btnShowError" alignment="0" max="32767" attributes="1"/>
+                      <Component id="btnShowWarning" alignment="0" max="32767" attributes="1"/>
+                  </Group>
+                  <Group type="102" alignment="0" attributes="0">
+                      <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                          <Component id="btnShowDialog" alignment="0" max="32767" attributes="1"/>
+                          <Component id="btnLockHydra" alignment="0" min="0" pref="0" max="32767" attributes="1"/>
+                          <Component id="btnShowInfo" alignment="0" max="32767" attributes="1"/>
+                      </Group>
+                      <EmptySpace min="-2" pref="179" max="-2" attributes="0"/>
+                  </Group>
+                  <Group type="102" alignment="0" attributes="0">
+                      <Component id="Reiniciar" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace pref="501" max="32767" attributes="0"/>
+                      <Component id="btnForward" min="-2" max="-2" attributes="0"/>
+                  </Group>
+              </Group>
+              <EmptySpace max="-2" attributes="0"/>
+          </Group>
+      </Group>
+    </DimensionLayout>
+    <DimensionLayout dim="1">
+      <Group type="103" groupAlignment="0" attributes="0">
+          <Group type="102" alignment="0" attributes="0">
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="jLabel1" min="-2" pref="60" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="btnCloseSession" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="btnShowError" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="btnShowWarning" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="btnShowInfo" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="btnLockHydra" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="btnShowDialog" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="breadCrumb" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="Reiniciar" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="btnForward" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace pref="69" max="32767" attributes="0"/>
+          </Group>
+      </Group>
+    </DimensionLayout>
+  </Layout>
+  <SubComponents>
+    <Component class="javax.swing.JLabel" name="jLabel1">
+      <Properties>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Dialog" size="36" style="1"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="PANEL DE PRUEBA 1"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="btnCloseSession">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Cerrar sesion"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="btnShowError">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Mostrar error"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="btnShowWarning">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Mostrar advertencia"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="btnShowInfo">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Mostrar informacion"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="btnLockHydra">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Bloquear 5 segundos"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="btnShowDialog">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Mostrar dialogo"/>
+      </Properties>
+    </Component>
+    <Container class="com.baco.ui.components.BSFancyBreadcrumb" name="breadCrumb">
+      <Properties>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Tahoma" size="22" style="1"/>
+        </Property>
+      </Properties>
+
+      <Layout>
+        <DimensionLayout dim="0">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <EmptySpace min="0" pref="608" max="32767" attributes="0"/>
+          </Group>
+        </DimensionLayout>
+        <DimensionLayout dim="1">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <EmptySpace min="0" pref="93" max="32767" attributes="0"/>
+          </Group>
+        </DimensionLayout>
+      </Layout>
+    </Container>
+    <Component class="javax.swing.JButton" name="btnForward">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Adelante"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="Reiniciar">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Reiniciar"/>
+      </Properties>
+    </Component>
+  </SubComponents>
+</Form>

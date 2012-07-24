@@ -1,0 +1,11 @@
+syntax:glob
+\.orig$
+\.orig\..*$
+\.chg\..*$
+\.rej$
+\.conflict\~$
+\.*target\.*$
+\.*settings\.*$
+\.project$
+.*~$
+nb-configuration.xml$
