@@ -30,6 +30,7 @@
  */
 package com.baco.ui.components;
 
+import com.google.common.collect.ArrayListMultimap;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -52,7 +53,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.border.LineBorder;
 import net.miginfocom.swing.MigLayout;
-import com.google.common.collect.ArrayListMultimap;
 import java.awt.BasicStroke;
 import java.awt.geom.Line2D;
 import java.beans.PropertyChangeListener;
