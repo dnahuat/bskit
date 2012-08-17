@@ -45,11 +45,11 @@ import java.io.Serializable;
  *    establecido o continua por el mensaje por defecto
  *
  */
-public class BSResponse implements Serializable {
+public class BSResponse<T extends Serializable> implements Serializable {
 
    private static final long serialVersionUID = -3608192223000170123L;
    private BSMessageWrapper header;
-   private Object payload;
+   private T payload;
    private boolean messageSet = false;
    private Throwable t;
 
@@ -94,15 +94,15 @@ public class BSResponse implements Serializable {
     * <p>Obtiene los datos de respuesta</p>
     * @return Los datos de respuesta como tipo <code>Serializable</code>
     */
-   public Serializable getData() {
-      return (Serializable)payload;
+   public T getData() {
+      return payload;
    }
 
    /**
     * <p>Establece los datos de respuesta</p>
     * @param data Los nuevos datos de respuesta
     */
-   public void setData(Serializable data) {
+   public void setData(T data) {
       this.payload = data;
    }
 
