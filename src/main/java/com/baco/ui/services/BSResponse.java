@@ -45,7 +45,7 @@ import java.io.Serializable;
  *    establecido o continua por el mensaje por defecto
  *
  */
-public class BSResponse<T extends Serializable> implements Serializable {
+public class BSResponse<T> implements Serializable {
 
    private static final long serialVersionUID = -3608192223000170123L;
    private BSMessageWrapper header;
