@@ -164,7 +164,7 @@ public class BSMessageWrapper implements Serializable {
          throwable.printStackTrace(printWriter);
          return writer.toString();
       } else {
-         return "Oops - No Available Stacktrace";
+         return "";
       }
    }
 }
