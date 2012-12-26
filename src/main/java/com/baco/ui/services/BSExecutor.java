@@ -18,9 +18,15 @@ public interface BSExecutor {
 	void submitWorkItem(BSWorkItem workItem);
 	
 	/**
-	 * Sets the systray icon
+	 * Sets the systray icon while idle
 	 * @param imageIcon The tray icon 
 	 */
-	void setImageIcon(ImageIcon imageIcon);
+	void setIdleImageIcon(ImageIcon imageIcon);
+
+	/**
+	 * Sets the systray icon while running
+	 * @param imageIcon  the Tray icon
+	 */
+	void setActiveImageIcon(ImageIcon imageIcon);
 	
 }	

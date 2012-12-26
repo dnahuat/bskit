@@ -12,12 +12,17 @@ import java.awt.TrayIcon;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorCompletionService;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import javax.swing.ImageIcon;
+import javax.swing.SwingUtilities;
 
 /**
  * Background process execution service
@@ -27,13 +32,69 @@ import javax.swing.ImageIcon;
 public class BSExecutorService implements BSStartupAction, BSExecutor {
 
 	/**
+	 * Decorator for backend executor
+	 */
+	private class BackendExecutor extends ThreadPoolExecutor {
+
+		public BackendExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, BlockingQueue<Runnable> workQueue) {
+			super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue);
+		}
+
+		@Override
+		protected void beforeExecute(Thread t, Runnable r) {
+			if (serviceStarted.get()) {
+				runningTasks.incrementAndGet();
+				/**
+				 * Change execution sys icon
+				 */
+				SwingUtilities.invokeLater(new Runnable() {
+					@Override
+					public void run() {
+						if (SystemTray.isSupported()) {
+							trayIcon.setImage(activeImageIcon.getImage());
+						}
+					}
+				});
+			}
+			super.beforeExecute(t, r);
+		}
+
+		@Override
+		protected void afterExecute(Runnable r, Throwable t) {
+			if (serviceStarted.get()) {
+				if (runningTasks.decrementAndGet() <= 0) {
+					/**
+					 * Change execution sys icon
+					 */
+					SwingUtilities.invokeLater(new Runnable() {
+						@Override
+						public void run() {
+							if (SystemTray.isSupported()) {
+								trayIcon.setImage(idleImageIcon.getImage());
+							}
+						}
+					});
+				}
+			}
+			super.afterExecute(r, t);
+		}
+	}
+	/**
 	 * This instance
 	 */
 	private static BSExecutor instance;
 	/**
+	 * Startup service status
+	 */
+	private final AtomicBoolean serviceStarted;
+	/**
+	 * Number executing tasks
+	 */
+	private final AtomicInteger runningTasks;
+	/**
 	 * The backend executor
 	 */
-	private ExecutorService backendExecutor;
+	private BackendExecutor backendExecutor;
 	/**
 	 * The system tray
 	 */
@@ -43,9 +104,13 @@ public class BSExecutorService implements BSStartupAction, BSExecutor {
 	 */
 	private TrayIcon trayIcon;
 	/**
-	 * Image Icon
+	 * Idle Image Icon
 	 */
-	private ImageIcon imageIcon;
+	private ImageIcon idleImageIcon;
+	/**
+	 * Active image icon
+	 */
+	private ImageIcon activeImageIcon;
 	/**
 	 * The work items menu
 	 */
@@ -61,7 +126,12 @@ public class BSExecutorService implements BSStartupAction, BSExecutor {
 	private List<String> signatures;
 
 	private BSExecutorService() {
-		this.backendExecutor = Executors.newFixedThreadPool(15);
+		runningTasks = new AtomicInteger(0);
+		serviceStarted = new AtomicBoolean(false);
+		backendExecutor = new BackendExecutor(15, 15,
+				0L, TimeUnit.MILLISECONDS,
+				new LinkedBlockingQueue<Runnable>());
+		//this.backendExecutor = Executors.newFixedThreadPool(15);
 		this.serviceExecutor = new ExecutorCompletionService<>(backendExecutor);
 		this.signatures = Collections.synchronizedList(new ArrayList());
 	}
@@ -74,7 +144,7 @@ public class BSExecutorService implements BSStartupAction, BSExecutor {
 	}
 
 	public static BSExecutorService getServiceInstance() {
-		if(instance == null) {
+		if (instance == null) {
 			instance = new BSExecutorService();
 		}
 		return (BSExecutorService) instance;
@@ -91,8 +161,11 @@ public class BSExecutorService implements BSStartupAction, BSExecutor {
 		 * Bootup service consumer
 		 */
 		backendExecutor.submit(new WorkItemConsumer());
-		if (imageIcon == null) {
-			imageIcon = new ImageIcon(getClass().getResource("/com/baco/ui/icons/menu_not_found.png"));
+		if (idleImageIcon == null) {
+			idleImageIcon = new ImageIcon(getClass().getResource("/com/baco/ui/icons/menu_not_found.png"));
+		}
+		if (activeImageIcon == null) {
+			activeImageIcon = idleImageIcon;
 		}
 		/**
 		 * Bootup system tray
@@ -100,21 +173,27 @@ public class BSExecutorService implements BSStartupAction, BSExecutor {
 		if (SystemTray.isSupported()) {
 			tray = SystemTray.getSystemTray();
 			trayMenu = new PopupMenu("Trabajos en fondo");
-			trayIcon = new TrayIcon(imageIcon.getImage(), "BSKit - WorkMan", trayMenu);
+			trayIcon = new TrayIcon(idleImageIcon.getImage(), "BSKit - WorkMan", trayMenu);
 			trayIcon.setImageAutoSize(true);
 			try {
 				tray.add(trayIcon);
 			} catch (AWTException ex) {
 			}
 		}
+		serviceStarted.set(true);
 		return true;
 	}
 
 	@Override
-	public final void setImageIcon(ImageIcon imageIcon) {
-		this.imageIcon = imageIcon;
+	public final void setIdleImageIcon(ImageIcon imageIcon) {
+		this.idleImageIcon = imageIcon;
 	}
-	
+
+	@Override
+	public void setActiveImageIcon(ImageIcon imageIcon) {
+		this.activeImageIcon = imageIcon;
+	}
+
 	@Override
 	public final void submitWorkItem(BSWorkItem workItem) {
 		if (!workItem.isExecuted()) {
@@ -250,7 +329,7 @@ public class BSExecutorService implements BSStartupAction, BSExecutor {
 					if (SystemTray.isSupported()) {
 						trayIcon.displayMessage("Error de ejecucion", "El servicio de ejecución de trabajos ha finalizado inesperadamente. Verifique el log de la aplicación", TrayIcon.MessageType.ERROR);
 					}
-					BSCoreFactory.getCore().logError("The consumer thread in the BSExecutorService has died, will reboot :-(", ex);
+					BSCoreFactory.getCore().logError("The consumer thread in the BSExecutorService has died :-(, will reboot", ex);
 				}
 			}
 		}
