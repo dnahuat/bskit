@@ -20,16 +20,16 @@ import java.util.concurrent.Future;
 import javax.swing.ImageIcon;
 
 /**
- * Servicio de ejecucion de procesos en fondo
+ * Background process execution service
  *
  * @author dnahuat
  */
-public class BSExecutorService implements BSStartupAction {
+public class BSExecutorService implements BSStartupAction, BSExecutor {
 
 	/**
 	 * This instance
 	 */
-	private static BSExecutorService instance;
+	private static BSExecutor instance;
 	/**
 	 * The backend executor
 	 */
@@ -66,11 +66,18 @@ public class BSExecutorService implements BSStartupAction {
 		this.signatures = Collections.synchronizedList(new ArrayList());
 	}
 
-	public static BSExecutorService getInstance() {
+	public static BSExecutor getInstance() {
 		if (instance == null) {
 			instance = new BSExecutorService();
 		}
 		return instance;
+	}
+
+	public static BSExecutorService getServiceInstance() {
+		if(instance == null) {
+			instance = new BSExecutorService();
+		}
+		return (BSExecutorService) instance;
 	}
 
 	@Override
@@ -79,7 +86,7 @@ public class BSExecutorService implements BSStartupAction {
 	}
 
 	@Override
-	public boolean executeAction() {
+	public final boolean executeAction() {
 		/**
 		 * Bootup service consumer
 		 */
@@ -103,10 +110,12 @@ public class BSExecutorService implements BSStartupAction {
 		return true;
 	}
 
+	@Override
 	public final void setImageIcon(ImageIcon imageIcon) {
 		this.imageIcon = imageIcon;
 	}
 	
+	@Override
 	public final void submitWorkItem(BSWorkItem workItem) {
 		if (!workItem.isExecuted()) {
 			/**
