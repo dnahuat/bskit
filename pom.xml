@@ -105,7 +105,7 @@
       <repository>
          <id>nexus</id>
          <name>Nexus Repo</name>
-         <url>http://localhost:8081/nexus/content/repositories/releases/</url>
+         <url>http://nexus.company.com/nexus/content/repositories/releases/</url>
       </repository>
    </distributionManagement>
    <properties>

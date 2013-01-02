@@ -66,8 +66,8 @@ public class BSTitledDialog extends JXPanel implements BSDialog {
         initComponents();
         lblTitle.setText(title);
         setupEvents();
-    }
-
+	}
+	
     public BSTitledDialog() {
         this.title = "";
         initComponents();
@@ -79,7 +79,7 @@ public class BSTitledDialog extends JXPanel implements BSDialog {
     public boolean beforeLoad() throws Exception {
         if(currentComponent != null) {
             return currentComponent.beforeLoad();
-        }
+			}
         return false;
     }
 
@@ -95,7 +95,7 @@ public class BSTitledDialog extends JXPanel implements BSDialog {
     public void afterLoad() {
         if(currentComponent != null) {
             currentComponent.afterLoad();
-        }        
+        }   
     }
 
     private void setupEvents() {
@@ -193,9 +193,9 @@ public class BSTitledDialog extends JXPanel implements BSDialog {
 
     @Override
     public final boolean close() {
-        BSCoreFactory.getCore().closeDialog(this);
-        return true;
-    }
+        	BSCoreFactory.getCore().closeDialog(this);
+			return true;
+		}
 
     @Override
     public final Component getAsComponent() {
@@ -231,10 +231,10 @@ public class BSTitledDialog extends JXPanel implements BSDialog {
         pnlLabel.setInheritAlpha(false);
         pnlLabel.setOpaque(false);
 
-        lblTitle.setFont(new java.awt.Font("SansSerif", 1, 14));
-        lblTitle.setForeground(new java.awt.Color(255, 255, 255));
+        lblTitle.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
         lblTitle.setText("<titulo no establecido>");
         lblTitle.setFocusable(false);
+        lblTitle.setForeground(new java.awt.Color(255, 255, 255));
 
         javax.swing.GroupLayout pnlLabelLayout = new javax.swing.GroupLayout(pnlLabel);
         pnlLabel.setLayout(pnlLabelLayout);
@@ -242,7 +242,7 @@ public class BSTitledDialog extends JXPanel implements BSDialog {
             pnlLabelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlLabelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(lblTitle, javax.swing.GroupLayout.DEFAULT_SIZE, 352, Short.MAX_VALUE)
+                .addComponent(lblTitle, javax.swing.GroupLayout.DEFAULT_SIZE, 360, Short.MAX_VALUE)
                 .addContainerGap())
         );
         pnlLabelLayout.setVerticalGroup(
@@ -266,7 +266,7 @@ public class BSTitledDialog extends JXPanel implements BSDialog {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(pnlTitle, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(pnlContents, javax.swing.GroupLayout.DEFAULT_SIZE, 376, Short.MAX_VALUE)
+            .addComponent(pnlContents, javax.swing.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
