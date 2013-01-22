@@ -52,6 +52,9 @@ import com.baco.ui.core.BSCoreFactory;
 import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.RectanglePainter;
 import com.baco.ui.containers.BSDialogListener;
+import com.baco.ui.core.BSSessionListener;
+import com.baco.ui.core.BSSessionSubject;
+import java.util.concurrent.Callable;
 
 /**
  * Administrador de sesion para pruebas no debe utilizarse en producción
@@ -147,14 +150,7 @@ public class BSSessionDemo extends JXPanel
     }
 
     @Override
-    public void clear() {
-        edtPassword.setText("");
-        edtUser.setText("");
-    }
-
-    @Override
     public boolean closeSession() {
-        this.clear();
         return true;
     }
 
@@ -356,21 +352,35 @@ public class BSSessionDemo extends JXPanel
       return 0;
    }
 
-   @Override
-   public boolean isReady() {
-      return true;
-   }
-
-   @Override
-   public void setReady(boolean ready) {
-      throw new UnsupportedOperationException("Not supported yet.");
-   }
-
     @Override
     public boolean hasMenu() {
         return true;
     }
 
+	@Override
+	public boolean login(String username, String password) {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	}
+
+	@Override
+	public List<BSSessionSubject> getAuthorizedSubject() {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	}
+
+	@Override
+	public void run(BSSessionListener listener) {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	}
+
+	@Override
+	public Callable<Boolean> getSessionManagerEntryPoint() {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	}
+
+	@Override
+	public Runnable getExitPoint() {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	}
 
 
 }

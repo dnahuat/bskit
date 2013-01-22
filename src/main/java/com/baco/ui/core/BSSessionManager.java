@@ -31,6 +31,8 @@
 package com.baco.ui.core;
 
 import com.baco.ui.menu.BSTreeNodeMenuItem;
+import java.util.List;
+import java.util.concurrent.Callable;
 
 /**
  * CHANGELOG
@@ -41,56 +43,73 @@ import com.baco.ui.menu.BSTreeNodeMenuItem;
  */
 /**
  * Interface para administradores de sesion del framework BSKit
+ *
  * @author dnahuat
  */
 public interface BSSessionManager extends BSCoreComponent {
 
-   /**
-    * <p>
-    * Limpia la sesion activa
-    * </p>
-    */
-   void clear();
+	/**
+	 * Cierra la sesion activa
+	 *
+	 * @return
+	 */
+	boolean closeSession();
 
-   /**
-    * <p>
-    * Cierra la sesion activa
-    * </p>
-    *
-    * @return
-    */
-   boolean closeSession();
+	/**
+	 * Devuelve una lista con los sujetos autorizados para loguearse
+	 * en la aplicacion
+	 *
+	 * @return La lista de sujetos
+	 */
+	List<BSSessionSubject> getAuthorizedSubject();
 
-   /**
-    * <p>
-    * Devuelve el {@link BSSessionWrapper}
-    * </p>
-    *
-    * @return
-    */
-   BSSessionWrapper getSessionWrapper();
+	/**
+	 * Inicia la sesion
+	 *
+	 * @param username El nombre de usuario
+	 * @param password La constraseña
+	 * @return True si la sesion fue exitosa, false de otro modo
+	 */
+	boolean login(String username, String password);
 
-   /**
-    * <p>
-    * Devuelve el menu de modulos correspondientes a la sesion
-    * </p>
-    *
-    * @return El menu de aplicacion
-    */
-   public BSTreeNodeMenuItem fetchMenu();
+	/**
+	 * Devuelve el {@link BSSessionWrapper}
+	 *
+	 * @return
+	 */
+	BSSessionWrapper getSessionWrapper();
 
-   /**
-    * Indica si esta implementacion de sesion debe tratar de obtener
-    * el menu
-    * @return True si se debe obtener el menu, false de otra forma
-    */
-   public boolean hasMenu();
+	/**
+	 * Devuelve el menu de modulos correspondientes a la sesion
+	 *
+	 * @return El menu de aplicacion
+	 */
+	BSTreeNodeMenuItem fetchMenu();
 
-   /**
-    * Indica si la sesion ya esta lista
-    * @return True si la sesion esta lista, False de otra forma
-    */
-   public boolean isReady();
+	/**
+	 * Indica si esta implementacion de sesion debe tratar de obtener
+	 * el menu
+	 *
+	 * @return True si se debe obtener el menu, false de otra forma
+	 */
+	boolean hasMenu();
 
-   public void setReady(boolean ready);
+	/**
+	 * Ejecuta el administrador de sesion con un listener en particular
+	 * @param listener El listener
+	 */
+	void run(BSSessionListener listener);
+
+	/**
+	 * Devuelve un proceso que sera ejecutado durante la carga 
+	 * @return El proceso que se ejecuta durante la carga del administrador de
+	 * sesion
+	 */
+	Callable<Boolean> getSessionManagerEntryPoint();
+
+	/**
+	 * Devuelve un punto de ejecucion de salida
+	 * @return El runnable a ejecutar
+	 */
+	Runnable getExitPoint();
 }

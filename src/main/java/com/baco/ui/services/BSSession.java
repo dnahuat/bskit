@@ -31,11 +31,11 @@
 package com.baco.ui.services;
 
 import java.util.Map;
-import java.util.HashMap;
-import java.util.Collections;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Interface de sesion
+ *
  * @author dnahuat
  *
  * CHANGELOG
@@ -45,38 +45,113 @@ import java.util.Collections;
  */
 public class BSSession {
 
-   /** variables de entorno */
-   private static Map enviromentVariables;
+	/**
+	 * No se puede instanciar
+	 */
+	private BSSession() {
+	}
+	
+	/**
+	 * variables de entorno
+	 */
+	private static final Map enviromentVariables = new ConcurrentHashMap(50);
 
-   /** inicializa el hash de variables de entorno */
-   static {
-      enviromentVariables = Collections.synchronizedMap(new HashMap());
-   }
+	public static String getClientName() {
+		Object curClient = enviromentVariables.get("current_client");
+		return (curClient != null) ? (String) curClient : "";
+	}
 
-   /**
-    * De vuelve el valor de la variable segun la llave o null si la variable
-    * no existe
-    *
-    * @param key nombre de la variable
-    * @return valor de la variable
-    */
-   public static Object get(Object key) {
-      return enviromentVariables.get(key);
-   }
+	public static void setClientName(String clientName) {
+		enviromentVariables.put("current_client", clientName);
+	}
 
-   /**
-    * Establece un valor a una variable de entorno. Si la variable ya existe
-    * la sobreescribe.
-    *
-    * @param key nombre de la variable
-    * @param value valor de la variable
-    * @return valor de la variable
-    */
-   public static Object put(Object key, Object value) {
-      return enviromentVariables.put(key, value);
-   }
+	public static String getHostname() {
+		Object curHost = enviromentVariables.get("current_hostname");
+		return (curHost != null) ? (String) curHost : "";	
+	}
 
-   public static void reset() {
-      enviromentVariables.clear();
-   }
+	public static void setHostname(String hostname) {
+		enviromentVariables.put("current_hostname", hostname);	
+	}
+	
+	public static String getPort() {
+		Object curPort = enviromentVariables.get("current_port");
+		return (curPort != null) ? (String) curPort : "";	
+	}
+
+	public static void setPort(String port) {
+		enviromentVariables.put("current_port", port);	
+	}	
+	
+	/**
+	 * Devuelve el nombre de usuario por defecto
+	 * @return El nombre de usuario
+	 */
+	public static String getUsername() {
+		Object curUsername = enviromentVariables.get("current_username");
+		return (curUsername != null) ? (String) curUsername : "";
+	}
+
+	/**
+	 * Establece el nombre de usuario por defecto
+	 * @param username El nombre de usuario
+	 */
+	public static void setUsername(String username) {
+		enviromentVariables.put("current_username", username);
+	}
+
+	/**
+	 * Devuelve la cadena de sesion
+	 * @return La cadena de sesion
+	 */
+	public static String getSession() {
+		Object curSession = enviromentVariables.get("current_session");
+		return (curSession != null) ? (String) curSession : "";
+	}
+
+	/**
+	 * Establece la cadena de sesion
+	 * @param session La cadena de sesion
+	 */
+	public static void setSession(String session) {
+		enviromentVariables.put("current_session", session);
+	}
+
+	/**
+	 * De vuelve el valor de la variable segun la llave o null si la variable
+	 * no existe
+	 *
+	 * @param key nombre de la variable
+	 * @return valor de la variable
+	 */
+	public static Object get(Object key) {
+		return enviromentVariables.get(key);
+	}
+
+	/**
+	 * Establece un valor a una variable de entorno. Si la variable ya existe
+	 * la sobreescribe.
+	 *
+	 * @param key nombre de la variable
+	 * @param value valor de la variable
+	 * @return valor de la variable
+	 */
+	public static Object put(Object key, Object value) {
+		if (key instanceof String) {
+			if(key != null && 
+					(key.equals("current_username") || key.equals("current_session") 
+					|| key.equals("current_hostname") || key.equals("current_port")
+					|| key.equals("current_client"))) {
+				return null;
+			}
+		}
+		return enviromentVariables.put(key, value);
+	}
+
+	/**
+	 * Limpia todo objeto almacenado en la sesion
+	 */
+	public static void reset() {
+		enviromentVariables.clear();
+	}
 }
