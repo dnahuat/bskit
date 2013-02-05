@@ -5,7 +5,7 @@
    <groupId>com.baco.commons</groupId>
    <artifactId>BSKit</artifactId>
    <packaging>jar</packaging>
-   <version>4.3-dev</version>
+   <version>4.6-dev</version>
    <name>BSKit</name>
    <url>http://maven.apache.org</url>
    <build>

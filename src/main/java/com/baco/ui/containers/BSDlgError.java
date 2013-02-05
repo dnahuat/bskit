@@ -42,163 +42,157 @@ import javax.swing.KeyStroke;
  * ----------
  * 2011-03-23 : Formato y estilo
  * 2011-03-15 : Se agrega formato html al mensaje y titulo
- *    -Se establecen iconos a los botones
- *    -Se agregan aceleradores a los botones
+ * -Se establecen iconos a los botones
+ * -Se agregan aceleradores a los botones
  *
  */
 /**
  * Implementacion de dialogo para despliegue de errores
+ *
  * @author dnahuat
  */
 public class BSDlgError extends BSDefaultDialog {
 
-   private static final String titleFormat = "<html><p>%s</p></html>";
-   private static final String messageFormat = "<html><p style='color:white;font:Tahoma;font-size:14pt;'>%s</p></html>";
-   private String message;
-   private Throwable throwable;
-   private String errorDetail;
-   private Component parent;
+	private static final String titleFormat = "<html><p>%s</p></html>";
+	private static final String messageFormat = "<html><p style='color:white;font:Tahoma;font-size:14pt;'>%s</p></html>";
+	private String message;
+	private final Throwable throwable;
+	private String errorDetail;
+	private final Component parent;
 
-   public BSDlgError(Component parent, String title, String message) {
-      super(String.format(titleFormat, title));
-      this.message = String.format(messageFormat, message);
-      this.throwable = null;
-      this.errorDetail = null;
-      this.parent = parent;
-      initComponents();
-      checkThrowable();
-      setupEvents();
-   }
+	public BSDlgError(Component parent, String title, String message) {
+		super(String.format(titleFormat, title));
+		this.message = String.format(messageFormat, message);
+		this.throwable = null;
+		this.parent = parent;
+		initComponents();
+	}
 
-   public BSDlgError(Component parent, String title, String message, Throwable t) {
-      super(String.format(titleFormat, title));
-      this.message = String.format(messageFormat, message);
-      this.throwable = t;
-      this.errorDetail = null;
-      this.parent = parent;
-      initComponents();
-      checkThrowable();
-      setupEvents();
-   }
+	public BSDlgError(Component parent, String title, String message, Throwable t) {
+		super(String.format(titleFormat, title));
+		this.message = String.format(messageFormat, message);
+		this.throwable = t;
+		this.errorDetail = null;
+		this.parent = parent;
+		initComponents();
+	}
 
-   public BSDlgError(Component parent, String title, String message,
-                     String errorDetail) {
-      super(String.format(titleFormat, title));
-      this.message = String.format(messageFormat, message);
-      this.throwable = null;
-      this.errorDetail = errorDetail;
-      this.parent = parent;
-      initComponents();
-      checkThrowable();
-      setupEvents();
-   }
+	public BSDlgError(Component parent, String title, String message,
+			String errorDetail) {
+		super(String.format(titleFormat, title));
+		this.message = String.format(messageFormat, message);
+		this.throwable = null;
+		this.errorDetail = errorDetail;
+		this.parent = parent;
+		initComponents();
+	}
 
-   private void setupEvents() {
-      btnOk.addActionListener(new ActionListener() {
+	@Override
+	public void afterLoad() {
+		super.afterLoad();
+		checkThrowable();
+		setupEvents();
+	}
 
-         @Override
-         public void actionPerformed(ActionEvent arg0) {
-            close();
-            if (parent != null) {
-               parent.requestFocusInWindow();
-            }
-         }
-      });
-      getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("F9"),
-                                              btnOk);
-      getActionMap().put(btnOk, new AbstractAction() {
+	private void setupEvents() {
+		btnOk.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				close();
+				if (parent != null) {
+					parent.requestFocusInWindow();
+				}
+			}
+		});
+		getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("F9"),
+				btnOk);
+		getActionMap().put(btnOk, new AbstractAction() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				btnOk.doClick();
+			}
+		});
+		btnDetails.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				if (throwable != null) {
+					new BSDlgThrowDetails(throwable).run();
+				}
+				if (errorDetail != null) {
+					new BSDlgThrowDetails(errorDetail).run();
+				}
+			}
+		});
+		getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("F4"),
+				btnDetails);
+		getActionMap().put(btnDetails, new AbstractAction() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				btnDetails.doClick();
+			}
+		});
+	}
 
-         @Override
-         public void actionPerformed(ActionEvent e) {
-            btnOk.doClick();
-         }
-      });
-      btnDetails.addActionListener(new ActionListener() {
+	private void checkThrowable() {
+		Runnable checkThrowableCode = new Runnable() {
+			@Override
+			public void run() {
+				btnDetails.setEnabled(throwable != null || (errorDetail != null && !errorDetail.trim().isEmpty()));
+			}
+		};
+		if (SwingUtilities.isEventDispatchThread()) {
+			checkThrowableCode.run();
+		} else {
+			SwingUtilities.invokeLater(checkThrowableCode);
+		}
+	}
 
-         @Override
-         public void actionPerformed(ActionEvent arg0) {
-            if (throwable != null) {
-               new BSDlgThrowDetails(throwable).run();
-            }
-            if (errorDetail != null) {
-               new BSDlgThrowDetails(errorDetail).run();
-            }
-         }
-      });
-      getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("F4"),
-                                              btnDetails);
-      getActionMap().put(btnDetails, new AbstractAction() {
+	@Override
+	public void setTitle(final String title) {
+		super.setTitle(String.format(titleFormat, title));
+		Runnable changeTitleCode = new Runnable() {
+			@Override
+			public void run() {
+				lblTitle.setText(getTitle());
+			}
+		};
+		if (SwingUtilities.isEventDispatchThread()) {
+			changeTitleCode.run();
+		} else {
+			SwingUtilities.invokeLater(changeTitleCode);
+		}
+	}
 
-         @Override
-         public void actionPerformed(ActionEvent e) {
-            btnDetails.doClick();
-         }
-      });
-   }
+	public String getMessage() {
+		return message;
+	}
 
-   private void checkThrowable() {
-      Runnable checkThrowableCode = new Runnable() {
+	public void setMessage(final String message) {
+		this.message = String.format(messageFormat, message);
+		Runnable changeMessageCode = new Runnable() {
+			@Override
+			public void run() {
+				edtMessage.setText(getMessage());
+			}
+		};
+		if (SwingUtilities.isEventDispatchThread()) {
+			changeMessageCode.run();
+		} else {
+			SwingUtilities.invokeLater(changeMessageCode);
+		}
+	}
 
-         @Override
-         public void run() {
-            btnDetails.setEnabled(throwable != null || errorDetail != null);
-         }
-      };
-      if (SwingUtilities.isEventDispatchThread()) {
-         checkThrowableCode.run();
-      } else {
-         SwingUtilities.invokeLater(checkThrowableCode);
-      }
-   }
+	@Override
+	public boolean requestFocusInWindow() {
+		return btnOk.requestFocusInWindow();
+	}
 
-   @Override
-   public void setTitle(final String title) {
-      super.setTitle(String.format(titleFormat, title));
-      Runnable changeTitleCode = new Runnable() {
+	@Override
+	public String getUniqueName() {
+		return "DlgError";
+	}
 
-         @Override
-         public void run() {
-            lblTitle.setText(getTitle());
-         }
-      };
-      if (SwingUtilities.isEventDispatchThread()) {
-         changeTitleCode.run();
-      } else {
-         SwingUtilities.invokeLater(changeTitleCode);
-      }
-   }
-
-   public String getMessage() {
-      return message;
-   }
-
-   public void setMessage(final String message) {
-      this.message = String.format(messageFormat, message);
-      Runnable changeMessageCode = new Runnable() {
-
-         @Override
-         public void run() {
-            edtMessage.setText(getMessage());
-         }
-      };
-      if (SwingUtilities.isEventDispatchThread()) {
-         changeMessageCode.run();
-      } else {
-         SwingUtilities.invokeLater(changeMessageCode);
-      }
-   }
-
-   @Override
-   public boolean requestFocusInWindow() {
-      return btnOk.requestFocusInWindow();
-   }
-
-   @Override
-   public String getUniqueName() {
-      return "DlgError";
-   }
-
-   @SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked")
    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
    private void initComponents() {
 

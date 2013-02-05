@@ -708,6 +708,24 @@ public class BSMainContainer extends JXFrame implements BSCore {
 
 	@Override
 	public void showErrorMessage(final Component parent, final String title,
+			final String message, final String stacktrace) {
+		Runnable runDialog = new Runnable() {
+			@Override
+			public void run() {
+				BSDlgError errorDialog = new BSDlgError(parent, title, message, stacktrace);
+				errorDialog.run();
+				errorDialog.requestFocusInWindow();
+			}
+		};
+		if (SwingUtilities.isEventDispatchThread()) {
+			runDialog.run();
+		} else {
+			SwingUtilities.invokeLater(runDialog);
+		}	
+	}
+	
+	@Override
+	public void showErrorMessage(final Component parent, final String title,
 			final String message,
 			final Throwable t) {
 		Runnable runDialog = new Runnable() {
@@ -1385,89 +1403,89 @@ public class BSMainContainer extends JXFrame implements BSCore {
 		return true;
 	}
 
-   // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-   private void initComponents() {
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
 
-      glassLayer = new org.jdesktop.swingx.JXGlassBox();
-      pnlTopLayer = new org.jdesktop.swingx.JXPanel();
-      pnlRoot = new javax.swing.JPanel();
-      splContainer = new javax.swing.JSplitPane();
-      tabPnlContainer = new javax.swing.JTabbedPane();
-      pnlMenu = new org.jdesktop.swingx.JXPanel();
-      btnCloseSession = new org.jdesktop.swingx.JXHyperlink();
-      jScrollPane1 = new javax.swing.JScrollPane();
-      treeMenu = new javax.swing.JTree();
+        glassLayer = new org.jdesktop.swingx.JXGlassBox();
+        pnlTopLayer = new org.jdesktop.swingx.JXPanel();
+        pnlRoot = new javax.swing.JPanel();
+        splContainer = new javax.swing.JSplitPane();
+        tabPnlContainer = new javax.swing.JTabbedPane();
+        pnlMenu = new org.jdesktop.swingx.JXPanel();
+        btnCloseSession = new org.jdesktop.swingx.JXHyperlink();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        treeMenu = new javax.swing.JTree();
 
-      glassLayer.setLayout(new java.awt.BorderLayout());
+        glassLayer.setLayout(new java.awt.BorderLayout());
 
-      pnlTopLayer.setOpaque(false);
-      pnlTopLayer.setLayout(new java.awt.GridBagLayout());
-      glassLayer.add(pnlTopLayer, java.awt.BorderLayout.CENTER);
+        pnlTopLayer.setOpaque(false);
+        pnlTopLayer.setLayout(new java.awt.GridBagLayout());
+        glassLayer.add(pnlTopLayer, java.awt.BorderLayout.CENTER);
 
-      setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
-      setStartPosition(org.jdesktop.swingx.JXFrame.StartPosition.CenterInScreen);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
+        setStartPosition(org.jdesktop.swingx.JXFrame.StartPosition.CenterInScreen);
 
-      pnlRoot.setLayout(new java.awt.BorderLayout());
+        pnlRoot.setLayout(new java.awt.BorderLayout());
 
-      splContainer.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
-      splContainer.setDividerSize(3);
+        splContainer.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        splContainer.setDividerSize(3);
 
-      tabPnlContainer.setMinimumSize(new java.awt.Dimension(20, 500));
-      tabPnlContainer.setPreferredSize(new java.awt.Dimension(600, 600));
-      splContainer.setRightComponent(tabPnlContainer);
+        tabPnlContainer.setMinimumSize(new java.awt.Dimension(20, 500));
+        tabPnlContainer.setPreferredSize(new java.awt.Dimension(600, 600));
+        splContainer.setRightComponent(tabPnlContainer);
 
-      pnlMenu.setBackground(new java.awt.Color(51, 51, 51));
-      pnlMenu.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
-      pnlMenu.setMinimumSize(new java.awt.Dimension(150, 0));
-      pnlMenu.setPreferredSize(new java.awt.Dimension(200, 399));
+        pnlMenu.setBackground(new java.awt.Color(51, 51, 51));
+        pnlMenu.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
+        pnlMenu.setMinimumSize(new java.awt.Dimension(150, 0));
+        pnlMenu.setPreferredSize(new java.awt.Dimension(200, 399));
 
-      btnCloseSession.setClickedColor(new java.awt.Color(204, 204, 204));
-      btnCloseSession.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/baco/ui/icons/icon_logout.png"))); // NOI18N
-      btnCloseSession.setText("<html><p>Cerrar sesi&oacute;n</p></html>");
-      btnCloseSession.setUnclickedColor(new java.awt.Color(204, 204, 204));
-      btnCloseSession.setFont(new java.awt.Font("Tahoma", 1, 16));
-      btnCloseSession.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        btnCloseSession.setClickedColor(new java.awt.Color(204, 204, 204));
+        btnCloseSession.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/baco/ui/icons/icon_logout.png"))); // NOI18N
+        btnCloseSession.setText("<html><p>Cerrar sesi&oacute;n</p></html>");
+        btnCloseSession.setUnclickedColor(new java.awt.Color(204, 204, 204));
+        btnCloseSession.setFont(new java.awt.Font("Tahoma", 1, 16)); // NOI18N
+        btnCloseSession.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 
-      javax.swing.tree.DefaultMutableTreeNode treeNode1 = new javax.swing.tree.DefaultMutableTreeNode(".");
-      treeMenu.setModel(new javax.swing.tree.DefaultTreeModel(treeNode1));
-      jScrollPane1.setViewportView(treeMenu);
+        javax.swing.tree.DefaultMutableTreeNode treeNode1 = new javax.swing.tree.DefaultMutableTreeNode(".");
+        treeMenu.setModel(new javax.swing.tree.DefaultTreeModel(treeNode1));
+        jScrollPane1.setViewportView(treeMenu);
 
-      javax.swing.GroupLayout pnlMenuLayout = new javax.swing.GroupLayout(pnlMenu);
-      pnlMenu.setLayout(pnlMenuLayout);
-      pnlMenuLayout.setHorizontalGroup(
-         pnlMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-         .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 196, Short.MAX_VALUE)
-         .addGroup(pnlMenuLayout.createSequentialGroup()
-            .addGap(12, 12, 12)
-            .addComponent(btnCloseSession, javax.swing.GroupLayout.DEFAULT_SIZE, 174, Short.MAX_VALUE)
-            .addContainerGap())
-      );
-      pnlMenuLayout.setVerticalGroup(
-         pnlMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlMenuLayout.createSequentialGroup()
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 554, Short.MAX_VALUE)
-            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-            .addComponent(btnCloseSession, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addContainerGap())
-      );
+        javax.swing.GroupLayout pnlMenuLayout = new javax.swing.GroupLayout(pnlMenu);
+        pnlMenu.setLayout(pnlMenuLayout);
+        pnlMenuLayout.setHorizontalGroup(
+            pnlMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 196, Short.MAX_VALUE)
+            .addGroup(pnlMenuLayout.createSequentialGroup()
+                .addGap(12, 12, 12)
+                .addComponent(btnCloseSession, javax.swing.GroupLayout.DEFAULT_SIZE, 174, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        pnlMenuLayout.setVerticalGroup(
+            pnlMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlMenuLayout.createSequentialGroup()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 564, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnCloseSession, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(6, 6, 6))
+        );
 
-      splContainer.setLeftComponent(pnlMenu);
+        splContainer.setLeftComponent(pnlMenu);
 
-      pnlRoot.add(splContainer, java.awt.BorderLayout.CENTER);
+        pnlRoot.add(splContainer, java.awt.BorderLayout.CENTER);
 
-      getContentPane().add(pnlRoot, java.awt.BorderLayout.CENTER);
+        getContentPane().add(pnlRoot, java.awt.BorderLayout.CENTER);
 
-      pack();
-   }// </editor-fold>//GEN-END:initComponents
-   // Variables declaration - do not modify//GEN-BEGIN:variables
-   protected org.jdesktop.swingx.JXHyperlink btnCloseSession;
-   private org.jdesktop.swingx.JXGlassBox glassLayer;
-   private javax.swing.JScrollPane jScrollPane1;
-   protected org.jdesktop.swingx.JXPanel pnlMenu;
-   private javax.swing.JPanel pnlRoot;
-   private org.jdesktop.swingx.JXPanel pnlTopLayer;
-   protected javax.swing.JSplitPane splContainer;
-   protected javax.swing.JTabbedPane tabPnlContainer;
-   protected javax.swing.JTree treeMenu;
-   // End of variables declaration//GEN-END:variables
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    protected org.jdesktop.swingx.JXHyperlink btnCloseSession;
+    private org.jdesktop.swingx.JXGlassBox glassLayer;
+    private javax.swing.JScrollPane jScrollPane1;
+    protected org.jdesktop.swingx.JXPanel pnlMenu;
+    private javax.swing.JPanel pnlRoot;
+    private org.jdesktop.swingx.JXPanel pnlTopLayer;
+    protected javax.swing.JSplitPane splContainer;
+    protected javax.swing.JTabbedPane tabPnlContainer;
+    protected javax.swing.JTree treeMenu;
+    // End of variables declaration//GEN-END:variables
 }

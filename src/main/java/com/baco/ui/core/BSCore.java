@@ -85,6 +85,8 @@ public interface BSCore extends BSCoreComponent {
     void showErrorMessage(Component parent, String title, String message,
                           Throwable t);
 
+	void showErrorMessage(Component parent, String title, String message, String stacktrace);
+
     void showErrorMessage(Component parent, String title, String message);
 
     void showErrorMessage(Component parent, BSMessageWrapper message);
