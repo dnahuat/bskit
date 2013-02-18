@@ -45,86 +45,84 @@ import javax.swing.SwingUtilities;
  */
 /**
  * Implementacion de dialogo para confirmacion de respuestas SI/NO
+ *
  * @author dnahuat
  */
 public class BSDialogYesNo extends BSDefaultDialog {
 
-   private String completeMessage;
-   private final BSConfirmListener listener;
+	private String completeMessage;
+	private final BSConfirmListener listener;
 
-   private BSDialogYesNo(String primaryTitle, String secondaryTitle, BSConfirmListener listener) {
-      this.completeMessage = "<html><body><p style='color:rgb(255,102,0);font-weight:bolder;font:sans-serif;font-size:1.1em;'>"
-              + primaryTitle
-              + "</p>"
-              + "<p style= 'font:sans-serif;color:#ffffff;'>"
-              + secondaryTitle
-              + "</p>"
-              + "</body></html>";
-      this.listener = listener;
-      initComponents();
-      edtMessage.setText(completeMessage);
-      setupEvents();
-   }
+	private BSDialogYesNo(String primaryTitle, String secondaryTitle, BSConfirmListener listener) {
+		this.completeMessage = "<html><body><p style='color:rgb(255,102,0);font-weight:bolder;font:sans-serif;font-size:1.1em;'>"
+				+ primaryTitle
+				+ "</p>"
+				+ "<p style= 'font:sans-serif;color:#ffffff;'>"
+				+ secondaryTitle
+				+ "</p>"
+				+ "</body></html>";
+		this.listener = listener;
+		initComponents();
+		edtMessage.setText(completeMessage);
+		setupEvents();
+	}
 
-   public static void showDialog(final BSConfirmListener listener, final String question, final String message) {
-      if (SwingUtilities.isEventDispatchThread()) {
-         SwingUtilities.invokeLater(new Runnable() {
+	public static void showDialog(final BSConfirmListener listener, final String question, final String message) {
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				BSDialog dialog = new BSDialogYesNo(question, message, listener);
+				BSCoreFactory.getCore().loadAsDialog(dialog);
+			}
+		});
+	}
 
-            @Override
-            public void run() {
-               BSDialog dialog = new BSDialogYesNo(question, message, listener);
-               BSCoreFactory.getCore().loadAsDialog(dialog);
-            }
-         });
-      }
-   }
+	private void setupEvents() {
+		btnYes.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				BSCoreFactory.getCore().closeDialog(BSDialogYesNo.this);
+				if (listener != null) {
+					listener.yesOption();
+				}
+			}
+		});
+		btnYes.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("F9"), "doClick");
+		btnYes.getActionMap().put("doClick", new AbstractAction() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				btnYes.doClick();
+			}
+		});
+		btnNo.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				BSCoreFactory.getCore().closeDialog(BSDialogYesNo.this);
+				if (listener != null) {
+					listener.noOption();
+				}
+			}
+		});
+		btnNo.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("F4"), "doClick");
+		btnNo.getActionMap().put("doClick", new AbstractAction() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				btnNo.doClick();
+			}
+		});
+	}
 
-   private void setupEvents() {
-      btnYes.addActionListener(new ActionListener() {
-         @Override
-         public void actionPerformed(ActionEvent e) {
-            BSCoreFactory.getCore().closeDialog(BSDialogYesNo.this);
-            if (listener != null) {
-               listener.yesOption();
-            }
-         }
-      });
-      btnYes.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("F9"), "doClick");
-      btnYes.getActionMap().put("doClick", new AbstractAction() {
-         @Override
-         public void actionPerformed(ActionEvent e) {
-            btnYes.doClick();
-         }
-      });
-      btnNo.addActionListener(new ActionListener() {
-         @Override
-         public void actionPerformed(ActionEvent e) {
-            BSCoreFactory.getCore().closeDialog(BSDialogYesNo.this);
-            if (listener != null) {
-               listener.noOption();
-            }
-         }
-      });
-      btnNo.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("F4"), "doClick");
-      btnNo.getActionMap().put("doClick", new AbstractAction() {
-         @Override
-         public void actionPerformed(ActionEvent e) {
-            btnNo.doClick();
-         }
-      });      
-   }
+	@Override
+	public String getUniqueName() {
+		return "BSDialogYesNo";
+	}
 
-   @Override
-   public String getUniqueName() {
-      return "BSDialogYesNo";
-   }
+	@Override
+	public void afterLoad() {
+		btnNo.requestFocusInWindow();
+	}
 
-    @Override
-    public void afterLoad() {
-        btnNo.requestFocusInWindow();
-    }
-
-   @SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
