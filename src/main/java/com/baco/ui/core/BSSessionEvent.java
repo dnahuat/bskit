@@ -11,7 +11,8 @@ public class BSSessionEvent {
 	public enum BSSessionEventType {
 		LOGIN_SUCCESSFUL,
 		LOGIN_FAILED,
-		USER_CANCELED
+		USER_CANCELED,
+                USER_SHUTDOWN
 	}	
 
 	private BSSessionEventType eventType;
