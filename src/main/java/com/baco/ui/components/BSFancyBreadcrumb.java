@@ -40,7 +40,6 @@ import java.awt.BasicStroke;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Paint;
-import sl.shapes.RoundPolygon;
 import javax.swing.JComponent;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
@@ -342,13 +341,7 @@ public class BSFancyBreadcrumb extends JComponent {
                /* Poligono para esta iteracion */
                int sectionStartPosX = sectionWidth * i;
                int sectionEndPosX = sectionWidth * (i + 1);
-               Polygon poly = new Polygon();
-               poly.addPoint(0, 0);
-               poly.addPoint(sectionEndPosX - 15, 0);
-               poly.addPoint(sectionEndPosX, (sectionHeight / 2) - 1);
-               poly.addPoint(sectionEndPosX - 15, sectionHeight - 1);
-               poly.addPoint(0, sectionHeight - 1);
-               RoundPolygon rpoly = new RoundPolygon(poly, 4);
+               java.awt.geom.RoundRectangle2D rpoly = new java.awt.geom.RoundRectangle2D.Double(sectionStartPosX, 0, sectionWidth, sectionHeight -1, 10, 10);
                if (bcParentElements.get(i).equals(currentParent)) {
                   /* Si hay mas de un elemento padre, la posicion x de los hijos puede ser diferente de 0 */
                   if (bcParentElements.size() > 1) {
@@ -406,16 +399,7 @@ public class BSFancyBreadcrumb extends JComponent {
                int childSectionWidth = childWidth / siblings.size();
                for (int i = siblings.size() - 1; i >= 0; i--) {
                   int childSectionEndPosX = childSectionWidth * (i + 1);
-                  /* Poligono para esta iteracion */
-                  Polygon poly = new Polygon();
-                  poly.addPoint(0, 0);
-                  poly.addPoint(childSectionEndPosX - 15, 0);
-                  poly.addPoint(childSectionEndPosX,
-                                (childSectionHeight / 2) - 1);
-                  poly.addPoint(childSectionEndPosX - 15,
-                                childSectionHeight - 1);
-                  poly.addPoint(0, childSectionHeight - 1);
-                  RoundPolygon rpoly = new RoundPolygon(poly, 4);
+                  java.awt.geom.RoundRectangle2D rpoly = new java.awt.geom.RoundRectangle2D.Double(childSectionEndPosX - childSectionWidth, 0, childSectionWidth, childSectionHeight -1, 10, 10);
                   if (siblings.get(i).equals(currentElement)) {
                      currentBG = currentBGPaint;
                      currentFG = currentFGPaint;

@@ -32,8 +32,6 @@ package com.baco.ui.componentsui;
 
 import com.baco.ui.components.BSGroupableTableHeader;
 import com.baco.ui.components.BSColumnGroup;
-import com.jtattoo.plaf.AbstractLookAndFeel;
-import com.jtattoo.plaf.JTattooUtilities;
 import java.util.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -176,7 +174,6 @@ public class BSGroupableTableHeaderUI extends BasicTableHeaderUI {
     private void paintCell(Graphics g, Rectangle cellRect, int columnIndex) {
         TableColumn aColumn = header.getColumnModel().getColumn(columnIndex);
         TableCellRenderer renderer = aColumn.getHeaderRenderer();
-        paintBackground(g, cellRect, columnIndex);
         renderer = new DefaultTableCellRenderer() {
 
             @Override
@@ -211,7 +208,6 @@ public class BSGroupableTableHeaderUI extends BasicTableHeaderUI {
         TableCellRenderer renderer = cGroup.getHeaderRenderer();
         Component component = renderer.getTableCellRendererComponent(
                 header.getTable(), cGroup.getHeaderValue(), false, false, -1, -1);
-        paintGroupBackground(g, cellRect, columnIndex);
         rendererPane.add(component);
         rendererPane.paintComponent(g, component, header, cellRect.x, cellRect.y,
                 cellRect.width, cellRect.height, true);
@@ -264,48 +260,4 @@ public class BSGroupableTableHeaderUI extends BasicTableHeaderUI {
         return createHeaderSize(width);
     }
 
-    protected void paintBackground(Graphics g, Rectangle cellRect) {
-        int x = cellRect.x;
-        int y = cellRect.y;
-        int w = cellRect.width;
-        int h = cellRect.height;
-        JTattooUtilities.fillHorGradient(g, AbstractLookAndFeel.getTheme().getColHeaderColors(), x, y, w, h);
-        /*if (col == rolloverCol && component.isEnabled()) {
-        JTattooUtilities.fillHorGradient(g, AbstractLookAndFeel.getTheme().getRolloverColors(), x, y, w, h);
-        } else if (JTattooUtilities.isFrameActive(header)) {
-        JTattooUtilities.fillHorGradient(g, AbstractLookAndFeel.getTheme().getColHeaderColors(), x, y, w, h);
-        } else {
-        JTattooUtilities.fillHorGradient(g, AbstractLookAndFeel.getTheme().getInActiveColors(), x, y, w, h);
-        }*/
-    }
-
-    protected void paintBackground(Graphics g, Rectangle cellRect, int columnIndex) {
-        int x = cellRect.x;
-        int y = cellRect.y;
-        int w = cellRect.width;
-        int h = cellRect.height;
-
-        if (columnIndex == rolloverCol) {
-            JTattooUtilities.fillHorGradient(g, AbstractLookAndFeel.getTheme().getRolloverColors(), x, y, w, h);
-        } else if (JTattooUtilities.isFrameActive(header)) {
-            JTattooUtilities.fillHorGradient(g, AbstractLookAndFeel.getTheme().getColHeaderColors(), x, y, w, h);
-        } else {
-            JTattooUtilities.fillHorGradient(g, AbstractLookAndFeel.getTheme().getInActiveColors(), x, y, w, h);
-        }
-    }
-    
-    protected void paintGroupBackground(Graphics g, Rectangle cellRect, int columnIndex) {
-        int x = cellRect.x;
-        int y = cellRect.y;
-        int w = cellRect.width;
-        int h = cellRect.height;
-
-        if (columnIndex == rolloverCol || columnIndex - 1 == rolloverCol) {
-            JTattooUtilities.fillHorGradient(g, AbstractLookAndFeel.getTheme().getRolloverColors(), x, y, w, h);
-        } else if (JTattooUtilities.isFrameActive(header)) {
-            JTattooUtilities.fillHorGradient(g, AbstractLookAndFeel.getTheme().getColHeaderColors(), x, y, w, h);
-        } else {
-            JTattooUtilities.fillHorGradient(g, AbstractLookAndFeel.getTheme().getInActiveColors(), x, y, w, h);
-        }
-    }
 }

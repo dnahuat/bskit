@@ -292,8 +292,88 @@ public class BSSessionDemo extends JXPanel
         dialogListeners.clear();
     }
     @Override
-    public BSTreeNodeMenuItem fetchMenu() {
-        return new BSTreeNodeMenuItem(new ArrayList<BSTreeNodeModel>());
+    public List<BSTreeNodeMenuItem> fetchMenu() {
+        List<BSTreeNodeMenuItem> menu = new ArrayList<>();
+        BSTreeNodeModel parent1 = new BSTreeNodeModel() {
+
+            @Override
+            public Comparable getNodeId() {
+                return 1;
+            }
+
+            @Override
+            public String getLabel() {
+                return "Parent 1";
+            }
+
+            @Override
+            public String getIconName() {
+                return "";
+            }
+
+            @Override
+            public String getClassName() {
+                return "";
+            }
+
+            @Override
+            public BSTreeNodeModel getParentNode() {
+                return null;
+            }
+
+            @Override
+            public boolean isEnabled() {
+                return true;
+            }
+
+            @Override
+            public int compareTo(BSTreeNodeModel o) {
+                return getNodeId().compareTo(o.getNodeId());
+            }
+        };
+        BSTreeNodeMenuItem parentNode1 = new BSTreeNodeMenuItem(parent1);
+        menu.add(parentNode1);
+
+        BSTreeNodeModel child1 = new BSTreeNodeModel() {
+
+            @Override
+            public Comparable getNodeId() {
+                return 2;
+            }
+
+            @Override
+            public String getLabel() {
+                return "Child 1.1";
+            }
+
+            @Override
+            public String getIconName() {
+                return "";
+            }
+
+            @Override
+            public String getClassName() {
+                return "com.baco.ui.demo.BSPnlDemo";
+            }
+
+            @Override
+            public BSTreeNodeModel getParentNode() {
+                return parent1;
+            }
+
+            @Override
+            public boolean isEnabled() {
+                return true;
+            }
+
+            @Override
+            public int compareTo(BSTreeNodeModel o) {
+                return getNodeId().compareTo(o.getNodeId());
+            }
+        };
+        parentNode1.add(new BSTreeNodeMenuItem(child1));
+
+        return menu;
     }
 
     @Override

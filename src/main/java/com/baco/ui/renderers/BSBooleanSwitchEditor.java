@@ -117,10 +117,6 @@ public class BSBooleanSwitchEditor extends BSBoolSwitch implements
       return this.oldValue;
    }
 
-   @Override
-   protected void animationFinalized() {
-      stopCellEditing();
-   }
 
    private void fireEditingStopped() {
       ChangeEvent ce = new ChangeEvent(this);

@@ -84,7 +84,7 @@ public interface BSSessionManager extends BSCoreComponent {
 	 *
 	 * @return El menu de aplicacion
 	 */
-	BSTreeNodeMenuItem fetchMenu();
+	List<BSTreeNodeMenuItem> fetchMenu();
 
 	/**
 	 * Indica si esta implementacion de sesion debe tratar de obtener

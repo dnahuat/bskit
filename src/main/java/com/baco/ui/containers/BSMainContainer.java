@@ -54,9 +54,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
-import org.jdesktop.jxlayer.JXLayer;
-import org.jdesktop.jxlayer.plaf.effect.BufferedImageOpEffect;
-import org.jdesktop.jxlayer.plaf.ext.LockableUI;
+import javax.swing.JLayer;
+import javax.swing.plaf.LayerUI;
 import org.jdesktop.swingx.JXFrame;
 
 import com.baco.ui.components.BSTabComponent;
@@ -78,6 +77,8 @@ import java.awt.GraphicsEnvironment;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.WindowAdapter;
 import java.util.List;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.swing.InputMap;
 import javax.swing.JButton;
@@ -86,7 +87,6 @@ import javax.swing.SwingWorker;
 import javax.swing.UIManager;
 import javax.swing.plaf.TabbedPaneUI;
 import org.jdesktop.swingx.JXHyperlink;
-import org.jdesktop.swingx.image.ColorTintFilter;
 
 /**
  * CHANGELOG
@@ -117,9 +117,9 @@ public class BSMainContainer extends JXFrame implements BSCore {
 	private BSBusMgr bus;
 	private String title;
 	private BSDialog loading;
-	private LockableUI lockUI;
+	private LockableLayerUI lockUI;
 	private String secondaryTitle;
-	private JXLayer<JComponent> rootLayer;
+	private JLayer<JComponent> rootLayer;
 	private BSTreeNodeMenuItem pressedNode;
 	private BSSessionManager sessionService = null;
 	private BSLogger logger = new BSDefaultLogger();
@@ -148,22 +148,15 @@ public class BSMainContainer extends JXFrame implements BSCore {
 			logWarning("BSKit no iniciara", null);
 		}
 		loading = new BSDlgLoading("Cargando...");
-		lockUI = new LockableUI();
-		lockUI.setLockedEffects(new BufferedImageOpEffect(new ColorTintFilter(
-				Color.BLACK, 0.7f)));
-		lockUI.setLockedCursor(Cursor.getDefaultCursor());
-		rootLayer = new JXLayer<JComponent>(pnlRoot, lockUI);
+		lockUI = new LockableLayerUI();
+		rootLayer = new JLayer<JComponent>(pnlRoot, lockUI);
 		pnlTopLayer.setDoubleBuffered(true);
 		rootLayer.setDoubleBuffered(true);
-		glassLayer.setDoubleBuffered(true);
 		remove(pnlRoot);
 		add(rootLayer, BorderLayout.CENTER);
-		pnlTopLayer.setInheritAlpha(false);
 		pnlTopLayer.setOpaque(false);
-		pnlTopLayer.setAlpha(0.0f);
 		rootLayer.setGlassPane(pnlTopLayer);
 		setLocationRelativeTo(null);
-		lockUI.updateUI(rootLayer);
 		setupEvents();
 		logInfo("BSKit listo para iniciar...");
 		return true;
@@ -309,7 +302,14 @@ public class BSMainContainer extends JXFrame implements BSCore {
 	public void setupMenu() {
 		if (sessionService != null && sessionService.getSessionWrapper().isActive() && sessionService.
 				hasMenu()) {
-			treeMenu.setModel(new DefaultTreeModel(sessionService.fetchMenu()));
+            BSTreeNodeMenuItem root = new BSTreeNodeMenuItem(null);
+            List<BSTreeNodeMenuItem> menuItems = sessionService.fetchMenu();
+            for (BSTreeNodeMenuItem item : menuItems) {
+                if (item.getParentNode() == null) {
+                    root.add(item);
+                }
+            }
+			treeMenu.setModel(new DefaultTreeModel(root));
 			treeMenu.setCellRenderer(new BSMenuRenderer());
 			for (int i = 0; i < treeMenu.getRowCount(); i++) {
 				treeMenu.expandRow(i);
@@ -554,7 +554,7 @@ public class BSMainContainer extends JXFrame implements BSCore {
 						pnlTopLayer.add(component);
 						pnlTopLayer.validate();
 						lockHydra();
-						lockUI.updateUI(rootLayer);
+						rootLayer.repaint();
 					}
 					dialog.afterLoad();
 					loadedDialogs.push(dialogForLoad);
@@ -597,7 +597,7 @@ public class BSMainContainer extends JXFrame implements BSCore {
 				public void run() {
 					pnlTopLayer.removeAll();
 					unlockHydra();
-					lockUI.updateUI(rootLayer);
+						rootLayer.repaint();
 				}
 			};
 			if (SwingUtilities.isEventDispatchThread()) {
@@ -630,7 +630,7 @@ public class BSMainContainer extends JXFrame implements BSCore {
 						if (loadedDialogs.isEmpty()) {
 							pnlTopLayer.removeAll();
 							unlockHydra();
-							lockUI.updateUI(rootLayer);
+								rootLayer.repaint();
 						} else {
 							if (!isModalLoading.get()) {
 								BSCoreComponent component = loadedDialogs.peek();
@@ -640,7 +640,7 @@ public class BSMainContainer extends JXFrame implements BSCore {
 								pnlTopLayer.add(comp);
 								pnlTopLayer.validate();
 								lockHydra();
-								lockUI.updateUI(rootLayer);
+									rootLayer.repaint();
 							}
 						}
 					}
@@ -893,7 +893,7 @@ public class BSMainContainer extends JXFrame implements BSCore {
 				pnlTopLayer.add(loading.getAsComponent());
 				pnlTopLayer.validate();
 				lockHydra();
-				lockUI.updateUI(rootLayer);
+						rootLayer.repaint();
 			}
 		};
 		if (SwingUtilities.isEventDispatchThread()) {
@@ -914,9 +914,6 @@ public class BSMainContainer extends JXFrame implements BSCore {
 			return;
 		}
 		isModalLoading.set(false);
-		if (!lockUI.isLocked()) {
-			return;
-		}
 		Runnable hideCode = new Runnable() {
 			@Override
 			public void run() {
@@ -929,7 +926,7 @@ public class BSMainContainer extends JXFrame implements BSCore {
 				} else {
 					unlockHydra();
 				}
-				lockUI.updateUI(rootLayer);
+				rootLayer.repaint();
 				if (focusAfter != null) {
 					focusAfter.requestFocusInWindow();
 				}
@@ -948,9 +945,6 @@ public class BSMainContainer extends JXFrame implements BSCore {
 			return;
 		}
 		isModalLoading.set(false);
-		if (!lockUI.isLocked()) {
-			return;
-		}
 		Runnable hideCode = new Runnable() {
 			@Override
 			public void run() {
@@ -963,7 +957,7 @@ public class BSMainContainer extends JXFrame implements BSCore {
 				} else {
 					unlockHydra();
 				}
-				lockUI.updateUI(rootLayer);
+				rootLayer.repaint();
 			}
 		};
 		if (SwingUtilities.isEventDispatchThread()) {
@@ -990,7 +984,7 @@ public class BSMainContainer extends JXFrame implements BSCore {
 				pnlTopLayer.add(comp);
 				pnlTopLayer.validate();
 				lockHydra();
-				lockUI.updateUI(rootLayer);
+				rootLayer.repaint();
 			}
 		};
 		if (SwingUtilities.isEventDispatchThread()) {
@@ -1069,7 +1063,7 @@ public class BSMainContainer extends JXFrame implements BSCore {
 								if (loadedDialogs.isEmpty()) {
 									pnlTopLayer.removeAll();
 									unlockHydra();
-									lockUI.updateUI(rootLayer);
+									rootLayer.repaint();
 								} else {
 									if (!isModalLoading.get()) {
 										BSCoreComponent component = loadedDialogs.peek();
@@ -1079,7 +1073,7 @@ public class BSMainContainer extends JXFrame implements BSCore {
 										pnlTopLayer.add(comp);
 										pnlTopLayer.validate();
 										lockHydra();
-										lockUI.updateUI(rootLayer);
+										rootLayer.repaint();
 									}
 								}
 							}
@@ -1099,9 +1093,6 @@ public class BSMainContainer extends JXFrame implements BSCore {
 	}
 
 	private void lockHydra() {
-		if (lockUI.isLocked()) {
-			return;
-		}
 		if (SwingUtilities.isEventDispatchThread()) {
 			lockUI.setLocked(true);
 		} else {
@@ -1115,9 +1106,6 @@ public class BSMainContainer extends JXFrame implements BSCore {
 	}
 
 	private void unlockHydra() {
-		if (!lockUI.isLocked()) {
-			return;
-		}
 		if (SwingUtilities.isEventDispatchThread()) {
 			pnlTopLayer.removeAll();
 			lockUI.setLocked(false);
@@ -1319,7 +1307,7 @@ public class BSMainContainer extends JXFrame implements BSCore {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				lockUI.updateUI(rootLayer);
+				rootLayer.repaint();
 			}
 		});
 	}
@@ -1406,7 +1394,6 @@ public class BSMainContainer extends JXFrame implements BSCore {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        glassLayer = new org.jdesktop.swingx.JXGlassBox();
         pnlTopLayer = new org.jdesktop.swingx.JXPanel();
         pnlRoot = new javax.swing.JPanel();
         splContainer = new javax.swing.JSplitPane();
@@ -1416,11 +1403,8 @@ public class BSMainContainer extends JXFrame implements BSCore {
         jScrollPane1 = new javax.swing.JScrollPane();
         treeMenu = new javax.swing.JTree();
 
-        glassLayer.setLayout(new java.awt.BorderLayout());
-
         pnlTopLayer.setOpaque(false);
         pnlTopLayer.setLayout(new java.awt.GridBagLayout());
-        glassLayer.add(pnlTopLayer, java.awt.BorderLayout.CENTER);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setStartPosition(org.jdesktop.swingx.JXFrame.StartPosition.CenterInScreen);
@@ -1477,9 +1461,64 @@ public class BSMainContainer extends JXFrame implements BSCore {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private class LockableLayerUI extends LayerUI<JComponent> {
+        private boolean mIsLocked;
+        private final AtomicBoolean isModalLoading = new AtomicBoolean(false);
+
+        @Override
+        public void paint(Graphics g, JComponent c) {
+            super.paint(g, c);
+
+            if (mIsLocked) {
+                Graphics2D g2 = (Graphics2D) g.create();
+
+                g2.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC_OVER, 0.5f));
+                g2.setColor(java.awt.Color.BLACK);
+                g2.fillRect(0, 0, c.getWidth(), c.getHeight());
+
+                g2.dispose();
+            }
+        }
+
+        public void setLocked(boolean isLocked) {
+            mIsLocked = isLocked;
+            firePropertyChange("locked", !isLocked, isLocked);
+        }
+
+        @Override
+        public void installUI(JComponent c) {
+            super.installUI(c);
+            ((JLayer<?>) c).setLayerEventMask(
+                java.awt.AWTEvent.MOUSE_EVENT_MASK |
+                java.awt.AWTEvent.MOUSE_MOTION_EVENT_MASK |
+                java.awt.AWTEvent.KEY_EVENT_MASK
+            );
+        }
+
+        @Override
+        public void uninstallUI(JComponent c) {
+            ((JLayer<?>) c).setLayerEventMask(0);
+            super.uninstallUI(c);
+        }
+
+        @Override
+        protected void processMouseEvent(MouseEvent e, JLayer<? extends JComponent> l) {
+            if (mIsLocked) {
+                e.consume();
+            }
+        }
+
+        @Override
+        protected void processKeyEvent(KeyEvent e, JLayer<? extends JComponent> l) {
+            if (mIsLocked) {
+                e.consume();
+            }
+        }
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     protected org.jdesktop.swingx.JXHyperlink btnCloseSession;
-    private org.jdesktop.swingx.JXGlassBox glassLayer;
     private javax.swing.JScrollPane jScrollPane1;
     protected org.jdesktop.swingx.JXPanel pnlMenu;
     private javax.swing.JPanel pnlRoot;

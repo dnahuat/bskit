@@ -31,8 +31,7 @@
 package com.baco.ui.demo;
 
 import com.baco.ui.core.BSCoreFactory;
-import com.jtattoo.plaf.acryl.AcrylLookAndFeel;
-import java.util.Properties;
+import com.formdev.flatlaf.FlatLightLaf;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -51,21 +50,12 @@ public class BSMainDemo {
     * @param args the command line arguments
     */
    public static void main(String[] args) {
+      BSSession.put("CoreImplementation", "com.baco.ui.containers.BSMainContainer");
       try {
-         Properties props = new Properties();
-         props.put("logoString", "Hydra");
-         props.put("windowDecoration", "off");
-         props.put("menuOpaque", "off");
-         AcrylLookAndFeel.setTheme("Small-Font");
-         AcrylLookAndFeel.setCurrentTheme(props);
-         UIManager.setLookAndFeel(new com.jtattoo.plaf.acryl.AcrylLookAndFeel());
+         UIManager.setLookAndFeel( new FlatLightLaf() );
       } catch (UnsupportedLookAndFeelException ex) {
-         System.exit(-1);
+         System.err.println("Failed to initialize LaF");
       }
-      BSCoreFactory.setSettingsFile((String) System.getProperty("user.home")
-              + "/bskit_demo_settings.dat");
-      BSCoreFactory.setSessionImplementation("com.baco.ui.demo.BSSessionDemo");
-      BSCoreFactory.setResourcesUrl("/icons/");
       BSCoreFactory.startCore("BSKit DEMO");
    }
 }

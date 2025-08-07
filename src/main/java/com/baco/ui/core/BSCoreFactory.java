@@ -127,7 +127,7 @@ public final class BSCoreFactory {
 
     public static String getSessionImplementation() {
         if (BSSession.get("SessionImplementation") != null) {
-            return (String) BSSession.get("sessionImplementation");
+            return (String) BSSession.get("SessionImplementation");
         } else {
             return null;
         }
@@ -162,6 +162,8 @@ public final class BSCoreFactory {
     }
 
     private static boolean initInstances() {
+        System.out.println("CoreImplementation: " + BSSession.get("CoreImplementation"));
+        System.out.println("SessionImplementation: " + BSSession.get("SessionImplementation"));
         /*
          * CORE
          */
@@ -293,6 +295,11 @@ public final class BSCoreFactory {
 
         public BSKitStarter() {
             hasBeenStarted.set(true);
+            BSSession.put("CoreImplementation", "com.baco.ui.containers.BSMainContainer");
+            BSSession.put("SessionImplementation", "com.baco.ui.demo.BSSessionDemo");
+            BSSession.put("SettingsFile", (String) System.getProperty("user.home")
+              + "/bskit_demo_settings.dat");
+            BSSession.put("ResourcesUrl", "/icons/");
             if (!initParameters()) {
                 parameterError = true;
                 cancel(true);

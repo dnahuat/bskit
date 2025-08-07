@@ -76,73 +76,6 @@ public class BSTreeNodeMenuItem extends DefaultMutableTreeNode
       setUserObject(label);
    }
 
-   /**
-    * Crea el arbol para el JTree a partir del Collection de TreeNodeModel
-    *
-    * @param nodes Coleccion de hojas del tipo TreeNodeModel
-    */
-   public BSTreeNodeMenuItem(Collection<BSTreeNodeModel> nodes) {
-      this.label = "";
-      LinkedList<BSTreeNodeModel> stack = new LinkedList<BSTreeNodeModel>();
-
-      //Recorremos todoas las hojas
-      for (BSTreeNodeModel node : nodes) {
-         BSTreeNodeModel current = node;
-         BSTreeNodeMenuItem currentParent = this;
-         //Bandera que sera false al descargar la pila
-         boolean hasMoreNodes = true;
-
-         //Apilo todos los nodos hasta llegar a la raiz
-         do {
-            stack.push(current);
-            current = current.getParentNode();
-         } while (current != null);
-
-         //Desapilo los nodos y voy insertando los que no existen
-         while (hasMoreNodes) {
-            try {
-               BSTreeNodeMenuItem nextParent;
-               current = stack.pop();
-               //Determino si el nodo que estoy desapilando existe o no
-               nextParent = currentParent.containsId(current);
-
-               if (nextParent != null) {
-                  //El nodo existe
-                  currentParent = nextParent;
-
-               } else {
-                  //El nodo no existe y se crea
-                  nextParent = new BSTreeNodeMenuItem(current);
-                  currentParent.add(nextParent);
-                  nextParent.setParent(currentParent);
-                  currentParent = nextParent;
-               }
-
-            } catch (NoSuchElementException ex) {
-               //La pila esta vacia hay que detener el ciclo
-               hasMoreNodes = false;
-            }
-         }
-      }
-   }
-
-   /**
-    * Determina si este nodo contiene a node como hijo
-    *
-    * @param node presunto hijo
-    * @return Devuelve la instancia del hijo si existe, null si no existe
-    */
-   public BSTreeNodeMenuItem containsId(BSTreeNodeModel node) {
-      for (int i = 0, size = getChildCount(); i < size; i++) {
-         BSTreeNodeMenuItem item = (BSTreeNodeMenuItem) getChildAt(i);
-
-         if (item.compareTo(node) == 0) {
-            return item;
-         }
-      }
-
-      return null;
-   }
 
    /**
     * Devuelve el nombre de la clase que se va a crear
@@ -215,30 +148,4 @@ public class BSTreeNodeMenuItem extends DefaultMutableTreeNode
       return label;
    }
 
-   /**
-    * Devuelve una representaci&oacute;n en String del nodo indicado en node
-    * y dibuja lineas segun el nivel indicado en level
-    *
-    * @param node Nodo de arbol
-    * @param level nivel del nodo en el arbol
-    * @return la representacion de dicho nodo con sus hijos en String
-    */
-   public static String toString(BSTreeNodeMenuItem node, int level) {
-      StringBuffer buffer = new StringBuffer();
-      Enumeration<BSTreeNodeMenuItem> childNodes = node.children();
-      int size = level * 2;
-
-      while (buffer.length() < size) {
-         buffer.append('_');
-      }
-
-      buffer.append(node.getLabel());
-      buffer.append("\r\n");
-
-      while (childNodes.hasMoreElements()) {
-         buffer.append(toString(childNodes.nextElement(), level + 1));
-      }
-
-      return buffer.toString();
-   }
 }

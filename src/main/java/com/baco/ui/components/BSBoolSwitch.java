@@ -51,9 +51,6 @@ import java.awt.event.ItemListener;
 import java.awt.event.ComponentEvent;
 import java.awt.geom.RoundRectangle2D;
 import java.awt.event.ComponentAdapter;
-import org.jdesktop.animation.timing.Animator;
-import org.jdesktop.animation.timing.TimingTarget;
-import org.jdesktop.animation.timing.interpolation.LinearInterpolator;
 
 /**
  * CHANGELOG
@@ -80,7 +77,6 @@ public class BSBoolSwitch extends JPanel
    private transient JLabel displayedText;
    private RoundRectangle2D componentFill;
    private transient GradientPaint componentBackground;
-   private ChangeValueAnimationDelegate animationDelegate;
    private List<ItemListener> itemListeners = new ArrayList<ItemListener>();
 
    public BSBoolSwitch() {
@@ -91,7 +87,6 @@ public class BSBoolSwitch extends JPanel
       this.value = value;
       this.oldValue = value;
       this.oldEnabled = isEnabled();
-      this.animationDelegate = new ChangeValueAnimationDelegate();
       this.borderColor = Color.BLACK;
       this.switchBorderColor = Color.BLACK;
       this.readOnly = false;
@@ -115,7 +110,9 @@ public class BSBoolSwitch extends JPanel
             if (!readOnly && BSBoolSwitch.this.isEnabled()) {
                value = !value;
                displayedText.setText(value ? "Si" : "No");
-               animationDelegate.doAnimation(value);
+               switchPanel.setBounds(value ? (getWidth() - 27) : 2, 2, 25, getHeight() - 4);
+               fireItemStateChanged(value);
+               repaint();
             }
          }
       });
@@ -129,12 +126,8 @@ public class BSBoolSwitch extends JPanel
       this.readOnly = readOnly;
    }
 
-   public final void setValueAnimated(Boolean value) {
-      if (this.value != value) {
-         animationDelegate.doAnimation(value);
-         this.value = value;
-      }
-      displayedText.setText(value ? "Si" : "No");
+   public final void setValue(Boolean value) {
+      setValueNotAnimated(value);
    }
 
    public final void setValueNotAnimated(Boolean value) {
@@ -241,61 +234,6 @@ public class BSBoolSwitch extends JPanel
       }
       revalidate();
       repaint();
-   }
-
-   protected void animationFinalized() {
-   }
-
-   private class ChangeValueAnimationDelegate implements TimingTarget {
-
-      private float switchValue = -1.0f;
-      private Animator switchAnimation;
-      private int finalPos;
-      private boolean targetValue;
-
-      public ChangeValueAnimationDelegate() {
-         switchAnimation = new Animator(150, (TimingTarget) this);
-         switchAnimation.setInterpolator(LinearInterpolator.getInstance());
-         switchAnimation.setRepeatCount(1);
-         switchAnimation.setAcceleration(0.2f);
-         switchAnimation.setDeceleration(0.8f);
-      }
-
-      public void doAnimation(boolean targetValue) {
-         this.targetValue = targetValue;
-         switchValue = -1.0f;
-         switchAnimation.stop();
-         switchAnimation.start();
-      }
-
-      @Override
-      public void timingEvent(float fraction) {
-         switchPanel.setBounds(Math.abs((int) ((switchValue - fraction)
-                 * finalPos)) + 2, 2, 25, BSBoolSwitch.this.getHeight() - 4);
-      }
-
-      @Override
-      public void begin() {
-         finalPos = (int) BSBoolSwitch.this.getSize().getWidth() - 29;
-         switchValue = targetValue ? 0.0f : 1.0f;
-      }
-
-      @Override
-      public void end() {
-         repaint(0, 0, getWidth(), 4);
-         repaint(0, 4, 4, getHeight() - 4);
-         repaint(getWidth() - 4, 4, 4, getHeight() - 4);
-         repaint(4, getHeight() - 4, getWidth() - 8, 4);
-         if (switchValue != -1.0f) {
-            fireItemStateChanged(targetValue);
-            animationFinalized();
-         }
-      }
-
-      @Override
-      public void repeat() {
-         begin();
-      }
    }
 
    private class FancySwitch extends JPanel {
